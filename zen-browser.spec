@@ -11,7 +11,7 @@
 
 Name:           zen-browser
 Version:        1.24.1b
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Zen Browser, repackaged from the official release tarball
 License:        MPL-2.0
 URL:            https://github.com/avegancafe/zen-browser-rpm
