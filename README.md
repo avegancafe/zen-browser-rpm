@@ -21,11 +21,12 @@ enterprise policy (`/opt/zen/distribution/policies.json`) so the two don't fight
 ### 1Password
 
 1Password for Linux only connects its extension to browsers it knows. Zen
-isn't one of them, so allowlist it, then fully quit and reopen 1Password:
+isn't one of them, so allowlist its executable (`/opt/zen/zen-bin`). 1Password
+checks the file each time a browser connects, so no restart is needed:
 
 ```sh
 sudo mkdir -p /etc/1password
-printf 'zen\nzen-bin\n' | sudo tee -a /etc/1password/custom_allowed_browsers >/dev/null
+echo zen-bin | sudo tee -a /etc/1password/custom_allowed_browsers >/dev/null
 sudo chown root:root /etc/1password/custom_allowed_browsers
 sudo chmod 755 /etc/1password/custom_allowed_browsers
 ```
