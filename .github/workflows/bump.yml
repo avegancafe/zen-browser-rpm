@@ -1,0 +1,43 @@
+# Checks Zen's latest stable release every few hours. When it's newer than the
+# spec, pins the new version and the release's sha256 digests (as published by
+# GitHub for Zen's uploaded tarballs) and pushes. COPR's webhook rebuilds on push.
+name: Bump Zen version
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for a new Zen release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          release=$(gh api repos/zen-browser/desktop/releases/latest)
+          latest=$(jq -r .tag_name <<<"$release")
+          current=$(awk '/^Version:/ {print $2}' zen-browser.spec)
+          if [ "$latest" = "$current" ]; then
+            echo "Up to date ($current)"
+            exit 0
+          fi
+          jq -r '.assets[]
+            | select(.name | test("^zen\\.linux-(x86_64|aarch64)\\.tar\\.xz$"))
+            | "\(.digest | sub("^sha256:"; ""))  \(.name)"' <<<"$release" | sort -k2 > sha256sums
+          if [ "$(grep -cE '^[0-9a-f]{64}  zen\.linux-' sha256sums)" != 2 ]; then
+            echo "Release $latest is missing a Linux tarball or its digest" >&2
+            cat sha256sums >&2
+            exit 1
+          fi
+          sed -i -E "s/^(Version:[[:space:]]+).*/\1$latest/; s/^(Release:[[:space:]]+)[0-9]+/\11/" zen-browser.spec
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Zen $latest"
+          git push

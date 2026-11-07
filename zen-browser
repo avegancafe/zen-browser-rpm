@@ -1,0 +1,4 @@
+#!/bin/sh
+# Launcher for the zen-browser RPM. Zen lives in /opt/zen; exec its own
+# launcher so the browser process is /opt/zen/zen (1Password checks this name).
+exec /opt/zen/zen "$@"
