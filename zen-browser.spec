@@ -10,8 +10,8 @@
 %global __requires_exclude ^(libxul|libmozgtk|libmozsandbox|libmozsqlite3|libmozwayland|liblgpllibs|libgkcodecs|libipcclientcerts|libmozavcodec|libmozavutil|libnspr4|libnss3|libnssutil3|libplc4|libplds4|libsmime3|libsoftokn3|libssl3|libfreeblpriv3|libonnxruntime)\\.so.*$
 
 Name:           zen-browser
-Version:        1.24.1b
-Release:        2%{?dist}
+Version:        1.24.2b
+Release:        1%{?dist}
 Summary:        Zen Browser, repackaged from the official release tarball
 License:        MPL-2.0
 URL:            https://github.com/avegancafe/zen-browser-rpm
